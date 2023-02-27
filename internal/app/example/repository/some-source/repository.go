@@ -2,8 +2,8 @@ package example
 
 import (
 	example "app-module/internal/app/example/domain"
+	"app-module/pkg/errors"
 	"app-module/pkg/source"
-	"errors"
 
 	"github.com/sirupsen/logrus"
 )

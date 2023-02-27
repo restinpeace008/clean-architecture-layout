@@ -26,7 +26,6 @@ func (d Delivery) test(ctx echo.Context) error {
 	}()
 
 	if data, err = d.uc.GetExampleData(0); err != nil {
-		d.l.Debugln(err)
 		return err
 	}
 	return nil

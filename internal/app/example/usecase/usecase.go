@@ -3,7 +3,7 @@ package example
 import (
 	example "app-module/internal/app/example/domain"
 
-	"github.com/pkg/errors"
+	"app-module/pkg/errors"
 )
 
 type Usecase struct {
