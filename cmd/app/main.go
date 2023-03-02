@@ -6,6 +6,9 @@ import (
 )
 
 func main() {
+	// Cobra run
 	cmd.Execute()
+
+	// App run
 	app.Start()
 }
