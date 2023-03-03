@@ -5,18 +5,24 @@ import (
 	"runtime"
 )
 
-func New(text string) error {
+func New(text string, codeHTTP ...*int) error {
 	var location string
 	_, file, line, ok := runtime.Caller(1)
 	if ok {
 		location = fmt.Sprintf("%s:%d", file, line)
 	}
 
-	return &customError{text: text, location: location, when: now()}
+	var code *int
+
+	if len(codeHTTP) != 0 {
+		code = codeHTTP[0]
+	}
+
+	return &customError{text: text, location: location, when: now(), codeHTTP: code}
 }
 
-func Wrap(err error, context string) error {
-	if err == nil {
+func Wrap(e error, context string, codeHTTP ...*int) error {
+	if e == nil {
 		return nil
 	}
 
@@ -27,8 +33,13 @@ func Wrap(err error, context string) error {
 		location = fmt.Sprintf("%s:%d", file, line)
 	}
 
-	return &customError{text: addWrap(err, context), location: location, when: now(), wrapped: err}
+	var code *int
 
+	if len(codeHTTP) != 0 {
+		code = codeHTTP[0]
+	}
+
+	return &customError{text: addWrap(e, context), location: location, when: now(), wrapped: e, codeHTTP: code}
 }
 
 func Unwrap(err error) error {
@@ -99,4 +110,18 @@ func CauseLocation(err error) string {
 	}
 
 	return ""
+}
+
+func GetCodeHTTP(err error) *int {
+	if e, ok := err.(interface{ getCodeHTTP() *int }); ok {
+		return e.getCodeHTTP()
+	}
+	return nil
+}
+
+func AddCodeHTTP(err error, code int) error {
+	if e, ok := err.(interface{ setCodeHTTP(code *int) error }); ok {
+		return e.setCodeHTTP(&code)
+	}
+	return err
 }

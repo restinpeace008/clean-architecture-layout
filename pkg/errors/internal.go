@@ -5,6 +5,7 @@ type customError struct {
 	location string
 	when     string
 	wrapped  error
+	codeHTTP *int
 }
 
 func (e *customError) Error() string {
@@ -21,4 +22,13 @@ func (e *customError) getTime() string {
 
 func (e *customError) getWrapped() error {
 	return e.wrapped
+}
+
+func (e *customError) getCodeHTTP() *int {
+	return e.codeHTTP
+}
+
+func (e *customError) setCodeHTTP(code *int) error {
+	e.codeHTTP = code
+	return e
 }

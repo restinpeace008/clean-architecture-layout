@@ -2,6 +2,7 @@ package example
 
 import (
 	example "app-module/internal/app/example/domain"
+	"app-module/pkg/utils"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -17,14 +18,9 @@ func (d Delivery) test(ctx echo.Context) error {
 
 	// This construction allows you to send universal answers to your clients
 	defer func() {
-		if err != nil {
-			response.Error = err.Error()
-			response.Data = nil
-			ctx.JSON(http.StatusInternalServerError, response)
-			return
-		}
+		response.Error = utils.ProcessError(err)
 		response.Data = data
-		ctx.JSON(http.StatusOK, response)
+		ctx.JSON(http.StatusInternalServerError, response) // TODO: think about status codes.
 	}()
 
 	// Here is depending place. Just call some `usecase` method.
