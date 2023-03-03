@@ -1,24 +1,34 @@
 package errors
 
-type Error struct {
+type err struct {
 	text     string
 	location string
 	when     string
 	wrapped  error
+	codeHTTP *int
 }
 
-func (e *Error) Error() string {
+func (e *err) Error() string {
 	return e.text
 }
 
-func (e *Error) getLocation() string {
+func (e *err) getLocation() string {
 	return e.location
 }
 
-func (e *Error) getTime() string {
+func (e *err) getTime() string {
 	return e.when
 }
 
-func (e *Error) getWrapped() error {
+func (e *err) getWrapped() error {
 	return e.wrapped
+}
+
+func (e *err) getCodeHTTP() *int {
+	return e.codeHTTP
+}
+
+func (e *err) setCodeHTTP(code *int) error {
+	e.codeHTTP = code
+	return e
 }
