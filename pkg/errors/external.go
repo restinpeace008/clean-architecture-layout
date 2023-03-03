@@ -5,7 +5,7 @@ import (
 	"runtime"
 )
 
-func New(text string, codeHTTP ...interface{}) error {
+func New(text string, codeHTTP ...*int) error {
 	var location string
 	_, file, line, ok := runtime.Caller(1)
 	if ok {
@@ -13,30 +13,33 @@ func New(text string, codeHTTP ...interface{}) error {
 	}
 
 	var code *int
-	if val, ok := codeHTTP[0].(*int); ok {
-		code = val
+
+	if len(codeHTTP) != 0 {
+		code = codeHTTP[0]
 	}
-	return &err{text: text, location: location, when: now(), codeHTTP: code}
+
+	return &customError{text: text, location: location, when: now(), codeHTTP: code}
 }
 
-func Wrap(e error, context string, codeHTTP ...interface{}) error {
+func Wrap(e error, context string, codeHTTP ...*int) error {
 	if e == nil {
 		return nil
 	}
 
 	var location string
+
 	_, file, line, ok := runtime.Caller(1)
 	if ok {
 		location = fmt.Sprintf("%s:%d", file, line)
 	}
 
 	var code *int
-	if val, ok := codeHTTP[0].(*int); ok {
-		code = val
+
+	if len(codeHTTP) != 0 {
+		code = codeHTTP[0]
 	}
 
-	return &err{text: addWrap(e, context), location: location, when: now(), wrapped: e, codeHTTP: code}
-
+	return &customError{text: addWrap(e, context), location: location, when: now(), wrapped: e, codeHTTP: code}
 }
 
 func Unwrap(err error) error {
@@ -57,6 +60,55 @@ func When(err error) string {
 	if e, ok := err.(interface{ getTime() string }); ok {
 		return e.getTime()
 	}
+	return ""
+}
+
+func Cause(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	var wrapped error
+
+	e, ok := err.(interface{ getWrapped() error })
+	if ok {
+		wrapped = e.getWrapped()
+		if wrapped != nil {
+			return Cause(wrapped)
+		}
+	}
+
+	return err
+}
+
+func Is(err error, target error) bool {
+	return Cause(err) == target
+}
+
+func CauseLocation(err error) string {
+	if err == nil {
+		return ""
+	}
+
+	if e, ok := err.(interface {
+		getWrapped() error
+		getLocation() string
+	}); ok {
+		if e.getLocation() == "" {
+			return ""
+		}
+
+		if wrapped := e.getWrapped(); wrapped != nil {
+			if er, ok := wrapped.(interface{ getLocation() string }); ok && er.getLocation() != "" {
+				return CauseLocation(wrapped)
+			}
+
+			return e.getLocation()
+		}
+
+		return e.getLocation()
+	}
+
 	return ""
 }
 

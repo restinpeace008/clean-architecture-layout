@@ -1,6 +1,6 @@
 package errors
 
-type err struct {
+type customError struct {
 	text     string
 	location string
 	when     string
@@ -8,27 +8,27 @@ type err struct {
 	codeHTTP *int
 }
 
-func (e *err) Error() string {
+func (e *customError) Error() string {
 	return e.text
 }
 
-func (e *err) getLocation() string {
+func (e *customError) getLocation() string {
 	return e.location
 }
 
-func (e *err) getTime() string {
+func (e *customError) getTime() string {
 	return e.when
 }
 
-func (e *err) getWrapped() error {
+func (e *customError) getWrapped() error {
 	return e.wrapped
 }
 
-func (e *err) getCodeHTTP() *int {
+func (e *customError) getCodeHTTP() *int {
 	return e.codeHTTP
 }
 
-func (e *err) setCodeHTTP(code *int) error {
+func (e *customError) setCodeHTTP(code *int) error {
 	e.codeHTTP = code
 	return e
 }
