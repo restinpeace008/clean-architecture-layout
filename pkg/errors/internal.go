@@ -1,24 +1,24 @@
 package errors
 
-type Error struct {
+type customError struct {
 	text     string
 	location string
 	when     string
 	wrapped  error
 }
 
-func (e *Error) Error() string {
+func (e *customError) Error() string {
 	return e.text
 }
 
-func (e *Error) getLocation() string {
+func (e *customError) getLocation() string {
 	return e.location
 }
 
-func (e *Error) getTime() string {
+func (e *customError) getTime() string {
 	return e.when
 }
 
-func (e *Error) getWrapped() error {
+func (e *customError) getWrapped() error {
 	return e.wrapped
 }
