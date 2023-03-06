@@ -32,3 +32,7 @@ func (e customError) setCodeHTTP(code int) error {
 	e.codeHTTP = code
 	return e
 }
+
+func (e customError) GetCode() int {
+	return e.codeHTTP
+}

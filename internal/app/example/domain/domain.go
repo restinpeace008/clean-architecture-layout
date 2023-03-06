@@ -1,7 +1,8 @@
 package example
 
 import (
-	"errors"
+	"app-module/pkg/errors"
+	"net/http"
 )
 
 // directly model
@@ -14,8 +15,12 @@ type Instance struct {
 
 // Response struct for answering to clients
 type Response struct {
-	Data  any
-	Error any
+	SomeData *Instance `json:"some-data"`
+}
+
+// Request struct for parsing client's data
+type Request struct {
+	SomeID int `json:"some-id"`
 }
 
 // Usecase behaviour
@@ -37,10 +42,11 @@ type Delivery interface {
 	Expose()
 }
 
-// validate private funciton, contains any rules for validating/sanitazingggggg
-func (ex *Instance) validate() error {
-	if ex.Test == nil {
-		return errors.New("test cannot be nil")
+// validate private funciton, contains any rules for validating/sanitazing
+func (ex *Request) Validate() error {
+	if ex.SomeID == 0 {
+		return errors.New("SomeID cannot be nil", http.StatusBadRequest)
 	}
+
 	return nil
 }

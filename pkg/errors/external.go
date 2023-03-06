@@ -37,6 +37,8 @@ func Wrap(e error, context string, codeHTTP ...int) error {
 
 	if len(codeHTTP) != 0 {
 		code = codeHTTP[0]
+	} else {
+		code = CodeHTTP(e)
 	}
 
 	return customError{text: addWrap(e, context), location: location, when: now(), wrapped: e, codeHTTP: code}

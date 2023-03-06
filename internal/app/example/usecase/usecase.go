@@ -1,8 +1,9 @@
 package example
 
 import (
-	example "app-module/internal/app/example/domain"
+	"net/http"
 
+	example "app-module/internal/app/example/domain"
 	"app-module/pkg/errors"
 )
 
@@ -23,7 +24,7 @@ func (uc Usecase) GetExampleData(id int) (*example.Instance, error) {
 	// Go to `Repository` layer
 	data, err := uc.r.GetOne(0)
 	if err != nil {
-		return nil, errors.Wrap(err, "GetExampleData")
+		return nil, errors.Wrap(err, "GetExampleData", http.StatusInternalServerError)
 	}
 
 	return data, nil
