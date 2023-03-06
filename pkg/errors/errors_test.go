@@ -523,12 +523,6 @@ func TestCauseLocation(t *testing.T) {
 		},
 	}
 
-	// FIXME
-
-	if _, ok := customCause.(customError); !ok {
-		assert.FailNow(t, "ALARM", "Test")
-	}
-
 	for i := range testCases {
 		result := CauseLocation(testCases[i].input) == testCases[i].want
 

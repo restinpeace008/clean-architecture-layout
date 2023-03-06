@@ -8,8 +8,8 @@ import (
 // the idea is to use universal naming to pretty imports.
 // for example: no matter what entity do you use, the import of it will have appearence: user.Instance; list.Instance and so on.
 type Instance struct {
-	ID   int         `json:"id"`
-	Test interface{} `json:"test"`
+	ID   int `json:"id"`
+	Test any `json:"test"`
 }
 
 // Response struct for answering to clients
