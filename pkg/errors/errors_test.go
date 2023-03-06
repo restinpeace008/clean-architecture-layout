@@ -2,6 +2,7 @@ package errors
 
 import (
 	"fmt"
+	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -122,8 +123,8 @@ func TestGetWrapped(t *testing.T) {
 	first := New("first")
 	second := New("second")
 
-	wrappedFirst := Wrap(first, "annotation 1")
-	wrappedSecond := Wrap(second, "annotation 1")
+	wrappedFirst := Wrap(first, "1")
+	wrappedSecond := Wrap(second, "1")
 
 	testCases := []struct {
 		input  error
@@ -164,6 +165,74 @@ func TestGetWrapped(t *testing.T) {
 	}
 }
 
+// internal.getCodeHTTP()
+func TestGetCodeHTTP(t *testing.T) {
+	first := New("first", http.StatusBadRequest)
+	second := New("second", http.StatusForbidden)
+
+	testCases := []struct {
+		input  error
+		want   int
+		expect bool
+	}{
+		{
+			input:  first,
+			want:   http.StatusBadRequest,
+			expect: true,
+		},
+		{
+			input:  second,
+			want:   http.StatusAccepted,
+			expect: false,
+		},
+	}
+
+	for i := range testCases {
+		input, ok := testCases[i].input.(interface{ getCodeHTTP() int })
+		if !ok {
+			assert.FailNow(t, "invalid input", "TestCase # %d", i+1)
+		}
+
+		result := input.getCodeHTTP() == testCases[i].want
+
+		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+	}
+}
+
+// internal.setCodeHTTP()
+func TestSetCodeHTTP(t *testing.T) {
+	e := New("new error").(interface{ setCodeHTTP(int) error })
+	err := e.setCodeHTTP(http.StatusBadRequest)
+
+	testCases := []struct {
+		input  error
+		want   int
+		expect bool
+	}{
+		{
+			input:  err,
+			want:   http.StatusBadRequest,
+			expect: true,
+		},
+		{
+			input:  err,
+			want:   http.StatusOK,
+			expect: false,
+		},
+	}
+
+	for i := range testCases {
+		input, ok := testCases[i].input.(interface{ getCodeHTTP() int })
+		if !ok {
+			assert.FailNow(t, "invalid input", "TestCase # %d", i+1)
+		}
+
+		result := input.getCodeHTTP() == testCases[i].want
+
+		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+	}
+}
+
 // external.New()
 func TestNew(t *testing.T) {
 	errMessage := "new error"
@@ -188,7 +257,7 @@ func TestNew(t *testing.T) {
 			assert.FailNow(t, "broken func", "TestCase # %d", i+1)
 		}
 
-		if _, ok := err.(*customError); !ok {
+		if _, ok := err.(customError); !ok {
 			assert.FailNow(t, "broken result", "TestCase # %d", i+1)
 		}
 
@@ -208,27 +277,27 @@ func TestWrap(t *testing.T) {
 		expect  bool
 	}{
 		{
-			context: "annotation",
+			context: "1",
 			wrapped: testErr,
-			want:    addWrap(testErr, "annotation"),
+			want:    addWrap(testErr, "1"),
 			expect:  true,
 		},
 		{
-			context: "annotation",
+			context: "1",
 			wrapped: nil,
 			want:    "",
 			expect:  true,
 		},
 		{
-			context: "annotation",
+			context: "1",
 			wrapped: testErr,
-			want:    addWrap(testErr, "annotation 1"),
+			want:    addWrap(testErr, "2"),
 			expect:  false,
 		},
 		{
-			context: "annotation",
+			context: "1",
 			wrapped: nil,
-			want:    "annotation",
+			want:    "1",
 			expect:  false,
 		},
 	}
@@ -238,7 +307,7 @@ func TestWrap(t *testing.T) {
 
 		err := Wrap(testCases[i].wrapped, testCases[i].context)
 		if err != nil {
-			if _, ok := err.(*customError); !ok {
+			if _, ok := err.(customError); !ok {
 				assert.FailNow(t, "broken result", "TestCase # %d", i+1)
 			}
 
@@ -262,7 +331,7 @@ func TestUnwrap(t *testing.T) {
 		expect bool
 	}{
 		{
-			input:  Wrap(testErr, "annotation"),
+			input:  Wrap(testErr, "1"),
 			want:   testErr,
 			expect: true,
 		},
@@ -272,7 +341,7 @@ func TestUnwrap(t *testing.T) {
 			expect: true,
 		},
 		{
-			input:  Wrap(Wrap(testErr, "annotation"), "new annotation"),
+			input:  Wrap(Wrap(testErr, "1"), "2"),
 			want:   testErr,
 			expect: false,
 		},
@@ -412,7 +481,7 @@ func TestCause(t *testing.T) {
 func TestCauseLocation(t *testing.T) {
 	customCause := New("custom error")
 	defaultCause := fmt.Errorf("default error")
-	defaultWrapped := Wrap(defaultCause, "anotation")
+	defaultWrapped := Wrap(defaultCause, "1")
 
 	cc := customCause.(interface{ getLocation() string })
 	dw := defaultWrapped.(interface{ getLocation() string })
@@ -454,8 +523,76 @@ func TestCauseLocation(t *testing.T) {
 		},
 	}
 
+	// FIXME
+
+	if _, ok := customCause.(customError); !ok {
+		assert.FailNow(t, "ALARM", "Test")
+	}
+
 	for i := range testCases {
 		result := CauseLocation(testCases[i].input) == testCases[i].want
+
+		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+	}
+}
+
+// internal.CodeHTTP()
+func TestCodeHTTP(t *testing.T) {
+	first := AddCodeHTTP(New("first"), http.StatusBadRequest)
+	second := AddCodeHTTP(New("second"), http.StatusForbidden)
+
+	testCases := []struct {
+		input  error
+		want   int
+		expect bool
+	}{
+		{
+			input:  first,
+			want:   http.StatusBadRequest,
+			expect: true,
+		},
+		{
+			input:  second,
+			want:   http.StatusAccepted,
+			expect: false,
+		},
+	}
+
+	for i := range testCases {
+		result := CodeHTTP(testCases[i].input) == testCases[i].want
+
+		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+	}
+}
+
+// internal.AddCodeHTTP()
+func TestAddCodeHTTP(t *testing.T) {
+	err := New("new error")
+
+	testCases := []struct {
+		input  error
+		code   int
+		want   int
+		expect bool
+	}{
+		{
+			input:  err,
+			code:   http.StatusBadRequest,
+			want:   http.StatusBadRequest,
+			expect: true,
+		},
+		{
+			input:  err,
+			code:   http.StatusBadRequest,
+			want:   http.StatusOK,
+			expect: false,
+		},
+	}
+
+	for i := range testCases {
+		e := AddCodeHTTP(err, http.StatusBadRequest)
+
+		result := CodeHTTP(e) == testCases[i].want
 
 		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
 	}

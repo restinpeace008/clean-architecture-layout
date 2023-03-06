@@ -5,30 +5,30 @@ type customError struct {
 	location string
 	when     string
 	wrapped  error
-	codeHTTP *int
+	codeHTTP int
 }
 
-func (e *customError) Error() string {
+func (e customError) Error() string {
 	return e.text
 }
 
-func (e *customError) getLocation() string {
+func (e customError) getLocation() string {
 	return e.location
 }
 
-func (e *customError) getTime() string {
+func (e customError) getTime() string {
 	return e.when
 }
 
-func (e *customError) getWrapped() error {
+func (e customError) getWrapped() error {
 	return e.wrapped
 }
 
-func (e *customError) getCodeHTTP() *int {
+func (e customError) getCodeHTTP() int {
 	return e.codeHTTP
 }
 
-func (e *customError) setCodeHTTP(code *int) error {
+func (e customError) setCodeHTTP(code int) error {
 	e.codeHTTP = code
 	return e
 }
