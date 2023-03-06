@@ -43,6 +43,7 @@ func (r *Repository) GetOne(id int) (*example.Instance, error) {
 	if _, err := r.someSource.PingWithError(); err != nil {
 		return nil, errors.Wrap(err, "GetOne")
 	}
+
 	return &example.Instance{ID: 1, Test: "test"}, nil
 }
 
