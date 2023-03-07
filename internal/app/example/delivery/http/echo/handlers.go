@@ -10,7 +10,7 @@ import (
 )
 
 // test demo endpoint handler
-func (d Delivery) test(ctx echo.Context) error {
+func (d *delivery) test(ctx echo.Context) error {
 	var (
 		request  example.Request
 		response *example.Response

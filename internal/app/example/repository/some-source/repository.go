@@ -8,9 +8,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Repository instance
+// repository instance
 // Define our dependencies here
-type Repository struct {
+type repository struct {
 	someLogger *logrus.Logger
 	someSource *source.Storage
 }
@@ -18,7 +18,7 @@ type Repository struct {
 // New `Repository` factory
 // And inject them here
 func New(logger *logrus.Logger, source *source.Storage) example.Repository {
-	return &Repository{
+	return &repository{
 		someLogger: logger,
 		someSource: source,
 	}
@@ -28,7 +28,7 @@ func New(logger *logrus.Logger, source *source.Storage) example.Repository {
 // It's anti-pattern, when some other `Usecase` calls this.
 
 // Create demo method. implements the `Repository` interface
-func (r Repository) Create(data *example.Instance) error {
+func (r *repository) Create(data *example.Instance) error {
 	// The way using injected dependencies
 	r.someLogger.Infoln("[example] Create - not implemented!")
 	// Trying to call some injected method.
@@ -37,7 +37,7 @@ func (r Repository) Create(data *example.Instance) error {
 }
 
 // GetOne implements the `Repository` interface
-func (r *Repository) GetOne(id int) (*example.Instance, error) {
+func (r *repository) GetOne(id int) (*example.Instance, error) {
 	// Trying to call another injected method, but with error now.
 	// Read about this errors here: pkg/errors.
 	if _, err := r.someSource.PingWithError(); err != nil {
@@ -48,21 +48,21 @@ func (r *Repository) GetOne(id int) (*example.Instance, error) {
 }
 
 // GetMany implements the `Repository` interface
-func (r Repository) GetMany(ids []int) ([]*example.Instance, error) {
+func (r *repository) GetMany(ids []int) ([]*example.Instance, error) {
 	r.someLogger.Infoln("[example] GetMany - not implemented!")
 	r.someLogger.Infoln("[example] GetMany - try to PING some source... ", r.someSource.Ping())
 	return nil, nil
 }
 
 // Update implements the `Repository` interface
-func (r Repository) Update(data *example.Instance) error {
+func (r *repository) Update(data *example.Instance) error {
 	r.someLogger.Infoln("[example] Update - not implemented!")
 	r.someLogger.Infoln("[example] Update - try to PING some source... ", r.someSource.Ping())
 	return nil
 }
 
 // Delete implements the `Repository` interface
-func (r Repository) Delete(id int) error {
+func (r *repository) Delete(id int) error {
 	r.someLogger.Infoln("[example] Delete - not implemented!")
 	r.someLogger.Infoln("[example] Delete - try to PING some source... ", r.someSource.Ping())
 	return nil

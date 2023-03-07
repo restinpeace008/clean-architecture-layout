@@ -11,22 +11,22 @@ import (
 
 // Repository instance
 // Define our dependencies here
-type Repository struct {
+type repository struct {
 	logger *logrus.Logger
 	sql    *postgres.Postgres
 }
 
-// New `Repository` factory
+// New `repository` factory
 // And inject them here
 func New(logger *logrus.Logger, db *postgres.Postgres) example.Repository {
-	return &Repository{
+	return &repository{
 		logger: logger,
 		sql:    db,
 	}
 }
 
 // Create demo method. implements the `Repository` interface
-func (r Repository) Create(data *example.Instance) error {
+func (r *repository) Create(data *example.Instance) error {
 	if _, err := r.sql.DB.Exec("INSERT INTO example (name) VALUES ($1)", data.Test); err != nil {
 		return errors.Wrap(err, "sql exec")
 	}
@@ -34,7 +34,7 @@ func (r Repository) Create(data *example.Instance) error {
 }
 
 // GetOne implements the `Repository` interface
-func (r *Repository) GetOne(id int) (*example.Instance, error) {
+func (r *repository) GetOne(id int) (*example.Instance, error) {
 	var name string
 
 	if err := r.sql.DB.QueryRow("SELECT name FROM example WHERE id = $1", id).Scan(&name); err != nil {
@@ -48,7 +48,7 @@ func (r *Repository) GetOne(id int) (*example.Instance, error) {
 }
 
 // GetMany implements the `Repository` interface
-func (r Repository) GetMany(ids []int) ([]*example.Instance, error) {
+func (r *repository) GetMany(ids []int) ([]*example.Instance, error) {
 	rows, err := r.sql.DB.Query("SELECT id, name FROM example WHERE id = ANY($1)", pq.Array(ids))
 	if err != nil {
 		return nil, errors.Wrap(err, "sql query")
@@ -78,7 +78,7 @@ func (r Repository) GetMany(ids []int) ([]*example.Instance, error) {
 }
 
 // Update implements the `Repository` interface
-func (r Repository) Update(data *example.Instance) error {
+func (r *repository) Update(data *example.Instance) error {
 	if _, err := r.sql.DB.Exec("UPDATE example SET name = $2 WHERE id = $1", data.ID, data.Test); err != nil {
 		return errors.Wrap(err, "sql exec")
 	}
@@ -86,7 +86,7 @@ func (r Repository) Update(data *example.Instance) error {
 }
 
 // Delete implements the `Repository` interface
-func (r Repository) Delete(id int) error {
+func (r *repository) Delete(id int) error {
 	if _, err := r.sql.DB.Exec("DELETE FROM example WHERE id = $1", id); err != nil {
 		return errors.Wrap(err, "sql exec")
 	}
