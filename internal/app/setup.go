@@ -4,9 +4,11 @@ import (
 	example "app-module/internal/app/example"
 	"app-module/pkg/errors"
 	"app-module/pkg/logger"
+	"fmt"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 // Kinda boilerplate/global entrypoiint
@@ -28,7 +30,7 @@ func Start() error {
 	}
 
 	// Start the server
-	return echo.Start("localhost:2222")
+	return echo.Start(fmt.Sprintf("%s:%s", viper.GetString("server.host"), viper.GetString("server.port")))
 }
 
 // The place where all of entities start
