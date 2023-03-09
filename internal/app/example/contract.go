@@ -2,6 +2,7 @@ package example
 
 import (
 	d "app-module/internal/app/example/delivery/http/echo"
+	sad "app-module/internal/app/example/delivery/http/someapi"
 	r "app-module/internal/app/example/repository/some-source"
 	uc "app-module/internal/app/example/usecase"
 	"app-module/pkg/logger"
@@ -18,8 +19,11 @@ func Run(api *echo.Group) error {
 	// Init repository layer
 	repository := r.New(l, source.New())
 
+	// Init delivery layer
+	someApiDelivery := sad.New("")
+
 	// Init usecase layer
-	usecase := uc.New(repository)
+	usecase := uc.New(repository, someApiDelivery)
 
 	// Init delivery layer
 	delivery := d.New(api.Group("/example"), usecase, l)

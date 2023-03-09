@@ -18,13 +18,21 @@ func TestGetExampleData(t *testing.T) {
 	defer ctrl.Finish()
 
 	for i, tcase := range testcases.GetExampleDataTCases {
-		m := mock.NewMockRepository(ctrl)
+		r := mock.NewMockRepository(ctrl)
+		d := mock.NewMockSomeApiDelivery(ctrl)
 
 		if repoMock, ok := tcase.Want["r.GetOne"]; ok {
-			m.
+			r.
 				EXPECT().
 				GetOne(repoMock.Args).
 				Return(repoMock.Result...)
+		}
+
+		if deliveryMock, ok := tcase.Want["sad.CheckSomeData"]; ok {
+			d.
+				EXPECT().
+				CheckSomeData(deliveryMock.Args).
+				Return(deliveryMock.Result...)
 		}
 
 		id, ok := tcase.Input.(int)
@@ -40,7 +48,7 @@ func TestGetExampleData(t *testing.T) {
 			}
 		}
 
-		result, err := New(m).GetExampleData(id)
+		result, err := New(r, d).GetExampleData(id)
 
 		assert.Equal(t, result, expectedResult, "TestCase # %d", i+1)
 		assert.Equal(t, errors.Cause(err), tcase.Err, "TestCase # %d", i+1)

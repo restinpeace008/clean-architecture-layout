@@ -32,10 +32,8 @@ func TestCreate(t *testing.T) {
 		expect error
 	}{
 		{
-			input:  &example.Instance{Test: "tester"},
-			want:   "tester",
-			err:    nil,
-			expect: nil,
+			input: &example.Instance{Test: "tester"},
+			want:  "tester",
 		},
 		{
 			input:  &example.Instance{Test: "builder"},
@@ -81,28 +79,22 @@ func TestGetOne(t *testing.T) {
 			input:  1,
 			want:   1,
 			result: sqlmock.NewRows([]string{"name"}).AddRow("tester"),
-			err:    nil,
 			expectResult: &example.Instance{
 				ID:   1,
 				Test: "tester",
 			},
-			expectErr: nil,
 		},
 		{
-			input:        2,
-			want:         2,
-			result:       nil,
-			err:          sql.ErrNoRows,
-			expectResult: nil,
-			expectErr:    sql.ErrNoRows,
+			input:     2,
+			want:      2,
+			err:       sql.ErrNoRows,
+			expectErr: sql.ErrNoRows,
 		},
 		{
-			input:        0,
-			want:         0,
-			result:       nil,
-			err:          fmt.Errorf("some error"),
-			expectResult: nil,
-			expectErr:    fmt.Errorf("some error"),
+			input:     0,
+			want:      0,
+			err:       fmt.Errorf("some error"),
+			expectErr: fmt.Errorf("some error"),
 		},
 	}
 
@@ -144,22 +136,16 @@ func TestGetMany(t *testing.T) {
 			input:  []int{1, 2, 3, 4, 5},
 			want:   []int{1, 2, 3, 4, 5},
 			result: sqlmock.NewRows([]string{"id", "name"}).AddRow(1, "tester"),
-			err:    nil,
 			expectResult: []*example.Instance{
 				{
 					ID:   1,
 					Test: "tester",
 				},
 			},
-			expectErr: nil,
 		},
 		{
-			input:        nil,
-			want:         nil,
-			result:       nil,
-			err:          fmt.Errorf("some error"),
-			expectResult: nil,
-			expectErr:    fmt.Errorf("some error"),
+			err:       fmt.Errorf("some error"),
+			expectErr: fmt.Errorf("some error"),
 		},
 	}
 
@@ -196,10 +182,8 @@ func TestUpdate(t *testing.T) {
 		expect error
 	}{
 		{
-			input:  example.Instance{ID: 1, Test: "tester"},
-			want:   example.Instance{ID: 1, Test: "tester"},
-			err:    nil,
-			expect: nil,
+			input: example.Instance{ID: 1, Test: "tester"},
+			want:  example.Instance{ID: 1, Test: "tester"},
 		},
 		{
 			input:  example.Instance{ID: 2, Test: "tester"},
@@ -240,10 +224,8 @@ func TestDelete(t *testing.T) {
 		expect error
 	}{
 		{
-			input:  1,
-			want:   1,
-			err:    nil,
-			expect: nil,
+			input: 1,
+			want:  1,
 		},
 		{
 			input:  0,

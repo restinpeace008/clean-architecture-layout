@@ -42,6 +42,10 @@ type Delivery interface {
 	Expose()
 }
 
+type SomeApiDelivery interface {
+	CheckSomeData(param string) error
+}
+
 // validate private funciton, contains any rules for validating/sanitazing
 func (ex *Request) Validate() error {
 	if ex.SomeID == 0 {

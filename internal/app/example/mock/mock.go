@@ -5,7 +5,7 @@
 package mock_example
 
 import (
-	domain "app-module/internal/app/example/domain"
+	example "app-module/internal/app/example/domain"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -35,10 +35,10 @@ func (m *MockUsecase) EXPECT() *MockUsecaseMockRecorder {
 }
 
 // GetExampleData mocks base method.
-func (m *MockUsecase) GetExampleData(id int) (*domain.Instance, error) {
+func (m *MockUsecase) GetExampleData(id int) (*example.Instance, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetExampleData", id)
-	ret0, _ := ret[0].(*domain.Instance)
+	ret0, _ := ret[0].(*example.Instance)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -73,7 +73,7 @@ func (m *MockRepository) EXPECT() *MockRepositoryMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockRepository) Create(data *domain.Instance) error {
+func (m *MockRepository) Create(data *example.Instance) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", data)
 	ret0, _ := ret[0].(error)
@@ -101,10 +101,10 @@ func (mr *MockRepositoryMockRecorder) Delete(id interface{}) *gomock.Call {
 }
 
 // GetMany mocks base method.
-func (m *MockRepository) GetMany(ids []int) ([]*domain.Instance, error) {
+func (m *MockRepository) GetMany(ids []int) ([]*example.Instance, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetMany", ids)
-	ret0, _ := ret[0].([]*domain.Instance)
+	ret0, _ := ret[0].([]*example.Instance)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -116,10 +116,10 @@ func (mr *MockRepositoryMockRecorder) GetMany(ids interface{}) *gomock.Call {
 }
 
 // GetOne mocks base method.
-func (m *MockRepository) GetOne(id int) (*domain.Instance, error) {
+func (m *MockRepository) GetOne(id int) (*example.Instance, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetOne", id)
-	ret0, _ := ret[0].(*domain.Instance)
+	ret0, _ := ret[0].(*example.Instance)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -131,7 +131,7 @@ func (mr *MockRepositoryMockRecorder) GetOne(id interface{}) *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockRepository) Update(data *domain.Instance) error {
+func (m *MockRepository) Update(data *example.Instance) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", data)
 	ret0, _ := ret[0].(error)
@@ -177,4 +177,41 @@ func (m *MockDelivery) Expose() {
 func (mr *MockDeliveryMockRecorder) Expose() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Expose", reflect.TypeOf((*MockDelivery)(nil).Expose))
+}
+
+// MockSomeApiDelivery is a mock of SomeApiDelivery interface.
+type MockSomeApiDelivery struct {
+	ctrl     *gomock.Controller
+	recorder *MockSomeApiDeliveryMockRecorder
+}
+
+// MockSomeApiDeliveryMockRecorder is the mock recorder for MockSomeApiDelivery.
+type MockSomeApiDeliveryMockRecorder struct {
+	mock *MockSomeApiDelivery
+}
+
+// NewMockSomeApiDelivery creates a new mock instance.
+func NewMockSomeApiDelivery(ctrl *gomock.Controller) *MockSomeApiDelivery {
+	mock := &MockSomeApiDelivery{ctrl: ctrl}
+	mock.recorder = &MockSomeApiDeliveryMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockSomeApiDelivery) EXPECT() *MockSomeApiDeliveryMockRecorder {
+	return m.recorder
+}
+
+// CheckSomeData mocks base method.
+func (m *MockSomeApiDelivery) CheckSomeData(param string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckSomeData", param)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CheckSomeData indicates an expected call of CheckSomeData.
+func (mr *MockSomeApiDeliveryMockRecorder) CheckSomeData(param interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckSomeData", reflect.TypeOf((*MockSomeApiDelivery)(nil).CheckSomeData), param)
 }

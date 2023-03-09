@@ -20,6 +20,10 @@ var (
 						nil,
 					},
 				},
+				"sad.CheckSomeData": {
+					Args:   "1",
+					Result: []any{nil},
+				},
 			},
 			Result: &example.Instance{
 				ID:   1,
@@ -34,6 +38,29 @@ var (
 					Args: 2,
 					Result: []any{
 						nil,
+						fmt.Errorf("some error"),
+					},
+				},
+			},
+			Result: nil,
+			Err:    fmt.Errorf("some error"),
+		},
+		{
+			Input: 3,
+			Want: map[string]DependencyMock{
+				"r.GetOne": {
+					Args: 3,
+					Result: []any{
+						&example.Instance{
+							ID:   3,
+							Test: "3",
+						},
+						nil,
+					},
+				},
+				"sad.CheckSomeData": {
+					Args: "3",
+					Result: []any{
 						fmt.Errorf("some error"),
 					},
 				},

@@ -33,6 +33,7 @@ func (e customError) setCodeHTTP(code int) error {
 	return e
 }
 
+// WIP for What?
 func (e customError) GetCode() int {
 	return e.codeHTTP
 }
