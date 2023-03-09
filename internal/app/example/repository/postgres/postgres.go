@@ -4,7 +4,6 @@ import (
 	example "app-module/internal/app/example/domain"
 	"app-module/pkg/errors"
 	"app-module/pkg/postgres"
-	"fmt"
 
 	"github.com/lib/pq"
 	"github.com/sirupsen/logrus"
@@ -81,7 +80,6 @@ func (r *repository) GetMany(ids []int) ([]*example.Instance, error) {
 // Update implements the `Repository` interface
 func (r *repository) Update(data *example.Instance) error {
 	if _, err := r.sql.DB.Exec("UPDATE example SET name = $2 WHERE id = $1", data.ID, data.Test); err != nil {
-		fmt.Println("CYKA")
 		return errors.Wrap(err, "sql exec")
 	}
 	return nil
