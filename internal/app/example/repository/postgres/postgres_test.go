@@ -2,8 +2,10 @@ package postgres
 
 import (
 	example "app-module/internal/app/example/domain"
+	"app-module/pkg/errors"
 	"app-module/pkg/postgres"
 	"database/sql"
+
 	"fmt"
 	"testing"
 
@@ -24,47 +26,35 @@ func TestCreate(t *testing.T) {
 	})
 
 	tests := []struct {
-		input  string
+		input  *example.Instance
 		want   string
 		err    error
-		expect bool
+		expect error
 	}{
 		{
-			input:  "tester",
+			input:  &example.Instance{Test: "tester"},
 			want:   "tester",
 			err:    nil,
-			expect: true,
+			expect: nil,
 		},
 		{
-			input:  "builder",
-			want:   "tester",
+			input:  &example.Instance{Test: "builder"},
+			want:   "builder",
 			err:    fmt.Errorf("example unique"),
-			expect: false,
-		},
-		{
-			input:  "",
-			want:   "tester",
-			err:    fmt.Errorf("example constraint"),
-			expect: false,
+			expect: fmt.Errorf("example unique"),
 		},
 	}
 
 	for i := range tests {
-		result := false
-		willReturn := sqlmock.NewResult(1, 1)
 		if tests[i].err != nil {
-			willReturn = sqlmock.NewErrorResult(tests[i].err)
+			mock.ExpectExec("INSERT INTO example").WithArgs(tests[i].want).WillReturnError(tests[i].err)
+		} else {
+			mock.ExpectExec("INSERT INTO example").WithArgs(tests[i].want).WillReturnResult(sqlmock.NewResult(1, 1))
 		}
 
-		mock.ExpectExec("INSERT INTO example").WithArgs(tests[i].want).WillReturnResult(willReturn)
+		err := repo.Create(tests[i].input)
 
-		if err := repo.Create(&example.Instance{
-			Test: tests[i].input,
-		}); err == nil {
-			result = true
-		}
-
-		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, tests[i].expect, errors.Cause(err), "TestCase # %d", i+1)
 	}
 }
 
@@ -80,48 +70,54 @@ func TestGetOne(t *testing.T) {
 	})
 
 	tests := []struct {
-		input  int
-		want   int
-		result *sqlmock.Rows
-		err    error
-		expect bool
+		input        int
+		want         int
+		result       *sqlmock.Rows
+		err          error
+		expectResult *example.Instance
+		expectErr    error
 	}{
 		{
 			input:  1,
 			want:   1,
 			result: sqlmock.NewRows([]string{"name"}).AddRow("tester"),
 			err:    nil,
-			expect: true,
+			expectResult: &example.Instance{
+				ID:   1,
+				Test: "tester",
+			},
+			expectErr: nil,
 		},
 		{
-			input:  2,
-			want:   1,
-			result: new(sqlmock.Rows),
-			err:    sql.ErrNoRows,
-			expect: false,
+			input:        2,
+			want:         2,
+			result:       nil,
+			err:          sql.ErrNoRows,
+			expectResult: nil,
+			expectErr:    sql.ErrNoRows,
 		},
 		{
-			input:  3,
-			want:   2,
-			result: new(sqlmock.Rows),
-			err:    fmt.Errorf("some error"),
-			expect: false,
+			input:        0,
+			want:         0,
+			result:       nil,
+			err:          fmt.Errorf("some error"),
+			expectResult: nil,
+			expectErr:    fmt.Errorf("some error"),
 		},
 	}
 
 	for i := range tests {
-		var (
-			err    error
-			result bool
-		)
-
-		mock.ExpectQuery("SELECT name FROM example").WithArgs(tests[i].want).WillReturnRows(tests[i].result).WillReturnError(tests[i].err)
-
-		if _, err = repo.GetOne(tests[i].input); err == nil {
-			result = true
+		if tests[i].err != nil {
+			mock.ExpectQuery("SELECT name FROM example").WithArgs(tests[i].want).WillReturnError(tests[i].err).RowsWillBeClosed()
+		} else {
+			mock.ExpectQuery("SELECT name FROM example").WithArgs(tests[i].want).WillReturnRows(tests[i].result)
 		}
 
-		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
+		result, err := repo.GetOne(tests[i].input)
+
+		assert.Equal(t, tests[i].expectErr, errors.Cause(err), "error TestCase # %d", i+1)
+
+		assert.Equal(t, tests[i].expectResult, result, "result TestCase # %d", i+1)
 	}
 }
 
@@ -137,41 +133,48 @@ func TestGetMany(t *testing.T) {
 	})
 
 	tests := []struct {
-		input  []int
-		want   []int
-		result *sqlmock.Rows
-		err    error
-		expect bool
+		input        []int
+		want         []int
+		result       *sqlmock.Rows
+		err          error
+		expectResult []*example.Instance
+		expectErr    error
 	}{
 		{
 			input:  []int{1, 2, 3, 4, 5},
 			want:   []int{1, 2, 3, 4, 5},
 			result: sqlmock.NewRows([]string{"id", "name"}).AddRow(1, "tester"),
 			err:    nil,
-			expect: true,
+			expectResult: []*example.Instance{
+				{
+					ID:   1,
+					Test: "tester",
+				},
+			},
+			expectErr: nil,
 		},
 		{
-			input:  nil,
-			want:   []int{1, 2},
-			result: new(sqlmock.Rows),
-			err:    fmt.Errorf("some error"),
-			expect: false,
+			input:        nil,
+			want:         nil,
+			result:       nil,
+			err:          fmt.Errorf("some error"),
+			expectResult: nil,
+			expectErr:    fmt.Errorf("some error"),
 		},
 	}
 
 	for i := range tests {
-		var (
-			err    error
-			result bool
-		)
-
-		mock.ExpectQuery("SELECT id, name FROM example").WithArgs(pq.Array(tests[i].want)).WillReturnRows(tests[i].result).WillReturnError(tests[i].err)
-
-		if _, err = repo.GetMany(tests[i].input); err == nil {
-			result = true
+		if tests[i].err != nil {
+			mock.ExpectQuery("SELECT id, name FROM example").WithArgs(pq.Array(tests[i].want)).WillReturnError(tests[i].err)
+		} else {
+			mock.ExpectQuery("SELECT id, name FROM example").WithArgs(pq.Array(tests[i].want)).WillReturnRows(tests[i].result)
 		}
 
-		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
+		result, err := repo.GetMany(tests[i].input)
+
+		assert.Equal(t, tests[i].expectErr, errors.Cause(err), "error TestCase # %d", i+1)
+
+		assert.Equal(t, tests[i].expectResult, result, "result TestCase # %d", i+1)
 	}
 }
 
@@ -190,42 +193,32 @@ func TestUpdate(t *testing.T) {
 		input  example.Instance
 		want   example.Instance
 		err    error
-		expect bool
+		expect error
 	}{
 		{
 			input:  example.Instance{ID: 1, Test: "tester"},
 			want:   example.Instance{ID: 1, Test: "tester"},
 			err:    nil,
-			expect: true,
+			expect: nil,
 		},
 		{
 			input:  example.Instance{ID: 2, Test: "tester"},
-			want:   example.Instance{ID: 3, Test: "tester"},
+			want:   example.Instance{ID: 2, Test: "tester"},
 			err:    fmt.Errorf("example unique"),
-			expect: false,
-		},
-		{
-			input:  example.Instance{},
-			want:   example.Instance{ID: 1},
-			err:    fmt.Errorf("example constraint"),
-			expect: false,
+			expect: fmt.Errorf("example unique"),
 		},
 	}
 
 	for i := range tests {
-		result := false
-		willReturn := sqlmock.NewResult(1, 1)
 		if tests[i].err != nil {
-			willReturn = sqlmock.NewErrorResult(tests[i].err)
+			mock.ExpectExec("UPDATE example").WithArgs(tests[i].want.ID, tests[i].want.Test).WillReturnError(tests[i].err)
+		} else {
+			mock.ExpectExec("UPDATE example").WithArgs(tests[i].want.ID, tests[i].want.Test).WillReturnResult(sqlmock.NewResult(1, 1))
 		}
 
-		mock.ExpectExec("UPDATE example SET").WithArgs(tests[i].want.ID, tests[i].want.Test).WillReturnResult(willReturn)
+		err := repo.Update(&tests[i].input)
 
-		if err := repo.Update(&tests[i].input); err == nil {
-			result = true
-		}
-
-		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, tests[i].expect, errors.Cause(err), "TestCase # %d", i+1)
 	}
 }
 
@@ -244,41 +237,31 @@ func TestDelete(t *testing.T) {
 		input  int
 		want   int
 		err    error
-		expect bool
+		expect error
 	}{
 		{
 			input:  1,
 			want:   1,
 			err:    nil,
-			expect: true,
-		},
-		{
-			input:  2,
-			want:   3,
-			err:    fmt.Errorf("example unique"),
-			expect: false,
+			expect: nil,
 		},
 		{
 			input:  0,
-			want:   1,
-			err:    fmt.Errorf("example constraint"),
-			expect: false,
+			want:   0,
+			err:    fmt.Errorf("example unique"),
+			expect: fmt.Errorf("example unique"),
 		},
 	}
 
 	for i := range tests {
-		result := false
-		willReturn := sqlmock.NewResult(1, 1)
 		if tests[i].err != nil {
-			willReturn = sqlmock.NewErrorResult(tests[i].err)
+			mock.ExpectExec("DELETE FROM example").WithArgs(tests[i].want).WillReturnError(tests[i].err)
+		} else {
+			mock.ExpectExec("DELETE FROM example").WithArgs(tests[i].want).WillReturnResult(sqlmock.NewResult(1, 1))
 		}
 
-		mock.ExpectExec("DELETE FROM example").WithArgs(tests[i].want).WillReturnResult(willReturn)
+		err := repo.Delete(tests[i].input)
 
-		if err := repo.Delete(tests[i].input); err == nil {
-			result = true
-		}
-
-		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, tests[i].expect, errors.Cause(err), "TestCase # %d", i+1)
 	}
 }

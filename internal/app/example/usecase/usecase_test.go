@@ -1,11 +1,13 @@
 package example
 
 import (
-	"fmt"
 	"testing"
 
 	example "app-module/internal/app/example/domain"
 	mock "app-module/internal/app/example/mock"
+	"app-module/pkg/errors"
+
+	"app-module/internal/app/example/usecase/testcases"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -15,49 +17,32 @@ func TestGetExampleData(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	tests := []struct {
-		input  int
-		want   int
-		result *example.Instance
-		err    error
-		expect bool
-	}{
-		{
-			input: 1,
-			want:  1,
-			result: &example.Instance{
-				ID:   1,
-				Test: "1",
-			},
-			err:    nil,
-			expect: true,
-		},
-		{
-			input:  2,
-			want:   2,
-			result: nil,
-			err:    fmt.Errorf("some error"),
-			expect: false,
-		},
-	}
+	for i, tcase := range testcases.GetExampleDataTCases {
+		m := mock.NewMockRepository(ctrl)
 
-	for i := range tests {
-		var (
-			err    error
-			result bool
-			m      = mock.NewMockRepository(ctrl)
-		)
-
-		m.
-			EXPECT().
-			GetOne(tests[i].want).
-			Return(tests[i].result, tests[i].err)
-
-		_, err = New(m).GetExampleData(tests[i].input)
-		if err == nil {
-			result = true
+		if repoMock, ok := tcase.Want["r.GetOne"]; ok {
+			m.
+				EXPECT().
+				GetOne(repoMock.Args).
+				Return(repoMock.Result...)
 		}
 
-		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
+		id, ok := tcase.Input.(int)
+		if !ok {
+			assert.FailNow(t, "invalid input", "TestCase # %d", i+1)
+		}
+
+		var expectedResult *example.Instance
+
+		if tcase.Result != nil {
+			if expectedResult, ok = tcase.Result.(*example.Instance); !ok {
+				assert.FailNow(t, "invalid expected result", "TestCase # %d", i+1)
+			}
+		}
+
+		result, err := New(m).GetExampleData(id)
+
+		assert.Equal(t, result, expectedResult, "TestCase # %d", i+1)
+		assert.Equal(t, errors.Cause(err), tcase.Err, "TestCase # %d", i+1)
 	}
 }
