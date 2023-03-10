@@ -13,14 +13,29 @@ type Instance struct {
 	Test any `json:"test"`
 }
 
+// TODO name
 // Response struct for answering to clients
 type Response struct {
 	SomeData *Instance `json:"some-data"`
 }
 
+// TODO name
 // Request struct for parsing client's data
 type Request struct {
 	SomeID int `json:"some-id"`
+}
+
+type DependencyMock struct {
+	Args   any
+	Result []any // []any{result, error} error is always at the end
+}
+
+// TestCase struct for testing functions with dependencies
+type TestCase struct {
+	Input  any                       // args for usecase func
+	Want   map[string]DependencyMock // mocks for repository and delivery interfaces
+	Result any                       // expected result (if exists) for usecase func
+	Err    error                     // expected error for usecase func
 }
 
 // Usecase behaviour
@@ -28,6 +43,7 @@ type Usecase interface {
 	GetExampleData(id int) (*Instance, error)
 }
 
+// TODO name
 // Repository behaviour
 type Repository interface {
 	Create(data *Instance) error
@@ -37,6 +53,7 @@ type Repository interface {
 	Delete(id int) error
 }
 
+// TODO name
 // Delivery behaviour
 type Delivery interface {
 	Expose()

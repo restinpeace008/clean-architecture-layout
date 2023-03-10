@@ -36,7 +36,7 @@ func (d *delivery) test(ctx echo.Context) error {
 	}
 
 	// Here is depending place. Just call some `usecase` method.
-	if data, err = d.uc.GetExampleData(0); err != nil {
+	if data, err = d.uc.GetExampleData(request.SomeID); err != nil {
 		return err
 	}
 

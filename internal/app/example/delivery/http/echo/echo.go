@@ -23,5 +23,5 @@ func New(e *echo.Group, uc example.Usecase, l *logrus.Logger) example.Delivery {
 // Expose implementation
 func (d *delivery) Expose() {
 	// make some demo route
-	d.api.GET("/test", d.test)
+	d.api.POST("/test", d.test)
 }

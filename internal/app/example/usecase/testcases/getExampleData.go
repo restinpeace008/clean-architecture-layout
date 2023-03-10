@@ -6,10 +6,10 @@ import (
 )
 
 var (
-	GetExampleDataTCases = []TestCase{
+	GetExampleDataTCases = []example.TestCase{
 		{
 			Input: 1,
-			Want: map[string]DependencyMock{
+			Want: map[string]example.DependencyMock{
 				"r.GetOne": {
 					Args: 1,
 					Result: []any{
@@ -33,7 +33,7 @@ var (
 		},
 		{
 			Input: 2,
-			Want: map[string]DependencyMock{
+			Want: map[string]example.DependencyMock{
 				"r.GetOne": {
 					Args: 2,
 					Result: []any{
@@ -47,7 +47,7 @@ var (
 		},
 		{
 			Input: 3,
-			Want: map[string]DependencyMock{
+			Want: map[string]example.DependencyMock{
 				"r.GetOne": {
 					Args: 3,
 					Result: []any{
