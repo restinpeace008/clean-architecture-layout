@@ -10,7 +10,7 @@ import (
 
 // internal.Error()
 func TestError(t *testing.T) {
-	testCases := []struct {
+	tests := []struct {
 		input  string
 		want   string
 		expect bool
@@ -27,10 +27,10 @@ func TestError(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
-		result := New(testCases[i].input).Error() == testCases[i].want
+	for i := range tests {
+		result := New(tests[i].input).Error() == tests[i].want
 
-		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
 	}
 }
 
@@ -42,7 +42,7 @@ func TestGetLocation(t *testing.T) {
 	f := first.(interface{ getLocation() string })
 	s := second.(interface{ getLocation() string })
 
-	testCases := []struct {
+	tests := []struct {
 		input  error
 		want   string
 		expect bool
@@ -64,15 +64,15 @@ func TestGetLocation(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
-		input, ok := testCases[i].input.(interface{ getLocation() string })
+	for i := range tests {
+		input, ok := tests[i].input.(interface{ getLocation() string })
 		if !ok {
 			assert.FailNow(t, "invalid input", "TestCase # %d", i+1)
 		}
 
-		result := input.getLocation() == testCases[i].want
+		result := input.getLocation() == tests[i].want
 
-		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
 	}
 }
 
@@ -84,7 +84,7 @@ func TestGetTime(t *testing.T) {
 	f := first.(interface{ getTime() string })
 	s := second.(interface{ getTime() string })
 
-	testCases := []struct {
+	tests := []struct {
 		input  error
 		want   string
 		expect bool
@@ -106,15 +106,15 @@ func TestGetTime(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
-		input, ok := testCases[i].input.(interface{ getTime() string })
+	for i := range tests {
+		input, ok := tests[i].input.(interface{ getTime() string })
 		if !ok {
 			assert.FailNow(t, "invalid input", "TestCase # %d", i+1)
 		}
 
-		result := input.getTime() == testCases[i].want
+		result := input.getTime() == tests[i].want
 
-		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
 	}
 }
 
@@ -126,7 +126,7 @@ func TestGetWrapped(t *testing.T) {
 	wrappedFirst := Wrap(first, "1")
 	wrappedSecond := Wrap(second, "1")
 
-	testCases := []struct {
+	tests := []struct {
 		input  error
 		want   error
 		expect bool
@@ -153,15 +153,15 @@ func TestGetWrapped(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
-		input, ok := testCases[i].input.(interface{ getWrapped() error })
+	for i := range tests {
+		input, ok := tests[i].input.(interface{ getWrapped() error })
 		if !ok {
 			assert.FailNow(t, "invalid input", "TestCase # %d", i+1)
 		}
 
-		result := input.getWrapped() == testCases[i].want
+		result := input.getWrapped() == tests[i].want
 
-		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
 	}
 }
 
@@ -170,7 +170,7 @@ func TestGetCodeHTTP(t *testing.T) {
 	first := New("first", http.StatusBadRequest)
 	second := New("second", http.StatusForbidden)
 
-	testCases := []struct {
+	tests := []struct {
 		input  error
 		want   int
 		expect bool
@@ -187,15 +187,15 @@ func TestGetCodeHTTP(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
-		input, ok := testCases[i].input.(interface{ getCodeHTTP() int })
+	for i := range tests {
+		input, ok := tests[i].input.(interface{ getCodeHTTP() int })
 		if !ok {
 			assert.FailNow(t, "invalid input", "TestCase # %d", i+1)
 		}
 
-		result := input.getCodeHTTP() == testCases[i].want
+		result := input.getCodeHTTP() == tests[i].want
 
-		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
 	}
 }
 
@@ -204,7 +204,7 @@ func TestSetCodeHTTP(t *testing.T) {
 	e := New("new error").(interface{ setCodeHTTP(int) error })
 	err := e.setCodeHTTP(http.StatusBadRequest)
 
-	testCases := []struct {
+	tests := []struct {
 		input  error
 		want   int
 		expect bool
@@ -221,15 +221,15 @@ func TestSetCodeHTTP(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
-		input, ok := testCases[i].input.(interface{ getCodeHTTP() int })
+	for i := range tests {
+		input, ok := tests[i].input.(interface{ getCodeHTTP() int })
 		if !ok {
 			assert.FailNow(t, "invalid input", "TestCase # %d", i+1)
 		}
 
-		result := input.getCodeHTTP() == testCases[i].want
+		result := input.getCodeHTTP() == tests[i].want
 
-		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
 	}
 }
 
@@ -237,12 +237,18 @@ func TestSetCodeHTTP(t *testing.T) {
 func TestNew(t *testing.T) {
 	errMessage := "new error"
 
-	testCases := []struct {
+	tests := []struct {
 		input  string
+		code   int
 		expect bool
 	}{
 		{
 			input:  errMessage,
+			expect: true,
+		},
+		{
+			input:  errMessage,
+			code:   400,
 			expect: true,
 		},
 		{
@@ -251,8 +257,8 @@ func TestNew(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
-		err := New(testCases[i].input)
+	for i := range tests {
+		err := New(tests[i].input, tests[i].code)
 		if err == nil {
 			assert.FailNow(t, "broken func", "TestCase # %d", i+1)
 		}
@@ -270,15 +276,23 @@ func TestWrap(t *testing.T) {
 	testMsg := "new err"
 	testErr := New(testMsg)
 
-	testCases := []struct {
+	tests := []struct {
 		context string
 		wrapped error
+		code    int
 		want    string
 		expect  bool
 	}{
 		{
 			context: "1",
 			wrapped: testErr,
+			want:    addWrap(testErr, "1"),
+			expect:  true,
+		},
+		{
+			context: "1",
+			wrapped: testErr,
+			code:    400,
 			want:    addWrap(testErr, "1"),
 			expect:  true,
 		},
@@ -302,10 +316,10 @@ func TestWrap(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
+	for i := range tests {
 		var msg string
 
-		err := Wrap(testCases[i].wrapped, testCases[i].context)
+		err := Wrap(tests[i].wrapped, tests[i].context, tests[i].code)
 		if err != nil {
 			if _, ok := err.(customError); !ok {
 				assert.FailNow(t, "broken result", "TestCase # %d", i+1)
@@ -314,9 +328,9 @@ func TestWrap(t *testing.T) {
 			msg = err.Error()
 		}
 
-		result := msg == testCases[i].want
+		result := msg == tests[i].want
 
-		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
 	}
 }
 
@@ -325,7 +339,7 @@ func TestUnwrap(t *testing.T) {
 	testMsg := "new err"
 	testErr := New(testMsg)
 
-	testCases := []struct {
+	tests := []struct {
 		input  error
 		want   error
 		expect bool
@@ -347,10 +361,10 @@ func TestUnwrap(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
-		result := testCases[i].want == Unwrap(testCases[i].input)
+	for i := range tests {
+		result := tests[i].want == Unwrap(tests[i].input)
 
-		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
 	}
 }
 
@@ -362,7 +376,7 @@ func TestLocation(t *testing.T) {
 	f := first.(interface{ getLocation() string })
 	s := second.(interface{ getLocation() string })
 
-	testCases := []struct {
+	tests := []struct {
 		input  error
 		want   string
 		expect bool
@@ -384,10 +398,10 @@ func TestLocation(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
-		result := Location(testCases[i].input) == testCases[i].want
+	for i := range tests {
+		result := Location(tests[i].input) == tests[i].want
 
-		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
 	}
 }
 
@@ -399,7 +413,7 @@ func TestWhen(t *testing.T) {
 	f := first.(interface{ getTime() string })
 	s := second.(interface{ getTime() string })
 
-	testCases := []struct {
+	tests := []struct {
 		input  error
 		want   string
 		expect bool
@@ -421,10 +435,10 @@ func TestWhen(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
-		result := When(testCases[i].input) == testCases[i].want
+	for i := range tests {
+		result := When(tests[i].input) == tests[i].want
 
-		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
 	}
 }
 
@@ -433,7 +447,7 @@ func TestCause(t *testing.T) {
 	customErr := New("custom error")
 	defaultErr := fmt.Errorf("default error")
 
-	testCases := []struct {
+	tests := []struct {
 		input  error
 		want   error
 		expect bool
@@ -470,10 +484,64 @@ func TestCause(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
-		result := Cause(testCases[i].input) == testCases[i].want
+	for i := range tests {
+		result := Cause(tests[i].input) == tests[i].want
 
-		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
+	}
+}
+
+// external.Is()
+func TestIs(t *testing.T) {
+	customErr := New("custom error")
+	defaultErr := fmt.Errorf("default error")
+
+	tests := []struct {
+		input  error
+		want   error
+		expect bool
+	}{
+		{
+			input:  customErr,
+			want:   customErr,
+			expect: true,
+		},
+		{
+			input:  Wrap(Wrap(customErr, "1"), "2"),
+			want:   customErr,
+			expect: true,
+		},
+		{
+			input:  defaultErr,
+			want:   defaultErr,
+			expect: true,
+		},
+		{
+			input:  New("custom error"),
+			want:   customErr,
+			expect: true,
+		},
+		{
+			input:  Wrap(Wrap(defaultErr, "1"), "2"),
+			want:   defaultErr,
+			expect: true,
+		},
+		{
+			input:  Wrap(Wrap(defaultErr, "1"), "2"),
+			want:   Wrap(defaultErr, "1"),
+			expect: false,
+		},
+		{
+			input:  Wrap(Wrap(New("custom error"), "1"), "2"),
+			want:   Wrap(customErr, "1"),
+			expect: false,
+		},
+	}
+
+	for i := range tests {
+		result := Is(tests[i].input, tests[i].want)
+
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
 	}
 }
 
@@ -486,7 +554,7 @@ func TestCauseLocation(t *testing.T) {
 	cc := customCause.(interface{ getLocation() string })
 	dw := defaultWrapped.(interface{ getLocation() string })
 
-	testCases := []struct {
+	tests := []struct {
 		input  error
 		want   string
 		expect bool
@@ -523,16 +591,10 @@ func TestCauseLocation(t *testing.T) {
 		},
 	}
 
-	// FIXME
+	for i := range tests {
+		result := CauseLocation(tests[i].input) == tests[i].want
 
-	if _, ok := customCause.(customError); !ok {
-		assert.FailNow(t, "ALARM", "Test")
-	}
-
-	for i := range testCases {
-		result := CauseLocation(testCases[i].input) == testCases[i].want
-
-		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
 	}
 }
 
@@ -541,7 +603,7 @@ func TestCodeHTTP(t *testing.T) {
 	first := AddCodeHTTP(New("first"), http.StatusBadRequest)
 	second := AddCodeHTTP(New("second"), http.StatusForbidden)
 
-	testCases := []struct {
+	tests := []struct {
 		input  error
 		want   int
 		expect bool
@@ -558,10 +620,10 @@ func TestCodeHTTP(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
-		result := CodeHTTP(testCases[i].input) == testCases[i].want
+	for i := range tests {
+		result := CodeHTTP(tests[i].input) == tests[i].want
 
-		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
 	}
 }
 
@@ -569,7 +631,7 @@ func TestCodeHTTP(t *testing.T) {
 func TestAddCodeHTTP(t *testing.T) {
 	err := New("new error")
 
-	testCases := []struct {
+	tests := []struct {
 		input  error
 		code   int
 		want   int
@@ -589,11 +651,11 @@ func TestAddCodeHTTP(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
+	for i := range tests {
 		e := AddCodeHTTP(err, http.StatusBadRequest)
 
-		result := CodeHTTP(e) == testCases[i].want
+		result := CodeHTTP(e) == tests[i].want
 
-		assert.Equal(t, result, testCases[i].expect, "TestCase # %d", i+1)
+		assert.Equal(t, result, tests[i].expect, "TestCase # %d", i+1)
 	}
 }

@@ -83,8 +83,15 @@ func Cause(err error) error {
 	return err
 }
 
+// WIP these errors not be may fully comparable (time, location)
 func Is(err error, target error) bool {
-	return Cause(err) == target
+	if Cause(err) == target {
+		return true
+	}
+	if Cause(err) == nil || target == nil {
+		return false
+	}
+	return Cause(err).Error() == target.Error()
 }
 
 func CauseLocation(err error) string {
@@ -105,7 +112,6 @@ func CauseLocation(err error) string {
 				return CauseLocation(wrapped)
 			}
 		}
-
 		return e.getLocation()
 	}
 

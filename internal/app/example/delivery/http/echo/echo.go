@@ -7,8 +7,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Delivery instance
-type Delivery struct {
+// delivery instance
+type delivery struct {
 	api *echo.Group
 	uc  example.Usecase
 	l   *logrus.Logger
@@ -17,11 +17,11 @@ type Delivery struct {
 // New instance's factory
 func New(e *echo.Group, uc example.Usecase, l *logrus.Logger) example.Delivery {
 	// Inject dependencies
-	return Delivery{api: e, uc: uc, l: l}
+	return &delivery{api: e, uc: uc, l: l}
 }
 
 // Expose implementation
-func (d Delivery) Expose() {
+func (d *delivery) Expose() {
 	// make some demo route
-	d.api.GET("/test", d.test)
+	d.api.POST("/test", d.test)
 }
