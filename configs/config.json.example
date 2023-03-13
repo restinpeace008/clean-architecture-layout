@@ -1,9 +1,11 @@
 {
     "server": {
-        "port": "2222",
-        "host": "localhost"
+        "port": "2222"
     },
     "someapi": {
         "url": ""
+    },
+    "postgres": {
+        "dsn": "postgres://postgres:123@db:5432/clean_arch?sslmode=disable"
     }
 }

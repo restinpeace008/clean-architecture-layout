@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/lib/pq"
+	"github.com/spf13/viper"
 )
 
 type Postgres struct {
@@ -15,7 +16,7 @@ type Postgres struct {
 }
 
 func New() *Postgres {
-	connString, err := pq.ParseURL("POSTGRES_DSN_FROM_CONFIG")
+	connString, err := pq.ParseURL(viper.GetString("postgres.dsn"))
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "invalid dsn"))
 	}
@@ -32,7 +33,38 @@ func New() *Postgres {
 		log.Fatal(errors.Wrap(err, "ping db"))
 	}
 
+	if err := initTables(db); err != nil {
+		log.Fatal(errors.Wrap(err, "init tables"))
+	}
+
 	return &Postgres{DB: db}
 }
 
-// TODO migrations and other
+func initTables(db *sql.DB) error {
+	tx, err := db.Begin()
+	if err != nil {
+		return errors.Wrap(err, "begin transaction")
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	createExampleTable := `CREATE TABLE IF NOT EXISTS example
+	(
+		id                 serial       NOT NULL,
+    	name               varchar(255)  NOT NULL,
+    	CONSTRAINT PK_example_id PRIMARY KEY (id)
+	);
+	`
+
+	_, err = tx.Exec(createExampleTable)
+	if err != nil {
+		return errors.Wrap(err, "exec")
+	}
+
+	return nil
+}

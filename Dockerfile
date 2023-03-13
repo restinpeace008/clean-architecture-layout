@@ -15,6 +15,4 @@ WORKDIR /app
 COPY --from=builder /bin/app ./app
 COPY --from=builder /source/configs/config.json ./configs/config.json
 
-EXPOSE 2222
-
 CMD [ "./app" ]
