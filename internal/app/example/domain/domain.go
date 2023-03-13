@@ -13,13 +13,11 @@ type Instance struct {
 	Test any `json:"test"`
 }
 
-// TODO name
 // Response struct for answering to clients
 type Response struct {
 	SomeData *Instance `json:"some-data"`
 }
 
-// TODO name
 // Request struct for parsing client's data
 type Request struct {
 	SomeID int `json:"some-id"`
@@ -43,7 +41,6 @@ type Usecase interface {
 	GetExampleData(id int) (*Instance, error)
 }
 
-// TODO name
 // Repository behaviour
 type Repository interface {
 	Create(data *Instance) error
@@ -53,7 +50,15 @@ type Repository interface {
 	Delete(id int) error
 }
 
-// TODO name
+// DBRepository behaviour
+type DBRepository interface {
+	Create(data *Instance) error
+	GetOne(id int) (*Instance, error)
+	GetMany(ids []int) ([]*Instance, error)
+	Update(data *Instance) error
+	Delete(id int) error
+}
+
 // Delivery behaviour
 type Delivery interface {
 	Expose()
