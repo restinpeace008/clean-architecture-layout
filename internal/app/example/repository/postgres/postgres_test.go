@@ -3,7 +3,6 @@ package postgres
 import (
 	example "app-module/internal/app/example/domain"
 	"app-module/pkg/errors"
-	"app-module/pkg/postgres"
 	"database/sql"
 
 	"fmt"
@@ -21,9 +20,7 @@ func TestCreate(t *testing.T) {
 	}
 	defer db.Close()
 
-	repo := New(nil, &postgres.Postgres{
-		DB: db,
-	})
+	repo := New(nil, db)
 
 	tests := []struct {
 		input  *example.Instance
@@ -63,9 +60,7 @@ func TestGetOne(t *testing.T) {
 	}
 	defer db.Close()
 
-	repo := New(nil, &postgres.Postgres{
-		DB: db,
-	})
+	repo := New(nil, db)
 
 	tests := []struct {
 		input        int
@@ -120,9 +115,7 @@ func TestGetMany(t *testing.T) {
 	}
 	defer db.Close()
 
-	repo := New(nil, &postgres.Postgres{
-		DB: db,
-	})
+	repo := New(nil, db)
 
 	tests := []struct {
 		input        []int
@@ -171,9 +164,7 @@ func TestUpdate(t *testing.T) {
 	}
 	defer db.Close()
 
-	repo := New(nil, &postgres.Postgres{
-		DB: db,
-	})
+	repo := New(nil, db)
 
 	tests := []struct {
 		input  example.Instance
@@ -213,9 +204,7 @@ func TestDelete(t *testing.T) {
 	}
 	defer db.Close()
 
-	repo := New(nil, &postgres.Postgres{
-		DB: db,
-	})
+	repo := New(nil, db)
 
 	tests := []struct {
 		input  int

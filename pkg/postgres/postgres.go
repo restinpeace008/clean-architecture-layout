@@ -11,11 +11,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-type Postgres struct {
-	DB *sql.DB
-}
-
-func New() *Postgres {
+func New() *sql.DB {
 	connString, err := pq.ParseURL(viper.GetString("postgres.dsn"))
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "invalid dsn"))
@@ -37,7 +33,7 @@ func New() *Postgres {
 		log.Fatal(errors.Wrap(err, "init tables"))
 	}
 
-	return &Postgres{DB: db}
+	return db
 }
 
 func initTables(db *sql.DB) error {

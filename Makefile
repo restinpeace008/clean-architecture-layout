@@ -8,3 +8,9 @@ build:
 
 run:
 	@./bin/app
+
+up: 
+	docker-compose -f $(PWD)/build/docker-compose.yml up -d --build
+
+down: 
+	docker-compose -f $(PWD)/build/docker-compose.yml down
