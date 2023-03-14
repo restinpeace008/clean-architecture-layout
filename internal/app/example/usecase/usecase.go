@@ -10,16 +10,16 @@ import (
 // `usecase` instance
 type usecase struct {
 	// Define dependecies
-	r  example.Repository
-	ss example.SomeService
+	r example.Repository
+	s example.SomeService
 }
 
 // New `usecase` factory
-func New(r example.Repository, ss example.SomeService) example.Usecase {
+func New(r example.Repository, s example.SomeService) example.Usecase {
 	// Inject dependencies
 	return &usecase{
-		r:  r,
-		ss: ss,
+		r: r,
+		s: s,
 	}
 }
 
@@ -32,7 +32,7 @@ func (uc *usecase) GetExampleData(id int) (*example.Instance, error) {
 	}
 
 	if param, ok := data.Test.(string); ok {
-		if err = uc.ss.CheckSomeData(param); err != nil {
+		if err = uc.s.CheckSomeData(param); err != nil {
 			return nil, errors.Wrap(err, "GetExampleData", http.StatusBadRequest)
 		}
 	}
