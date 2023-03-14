@@ -64,6 +64,7 @@ type Delivery interface {
 	Expose()
 }
 
+// SomeApiDelivery behaviour
 type SomeApiDelivery interface {
 	CheckSomeData(param string) error
 }

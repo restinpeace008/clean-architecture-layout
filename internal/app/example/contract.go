@@ -3,10 +3,10 @@ package example
 import (
 	d "app-module/internal/app/example/delivery/http/echo"
 	sad "app-module/internal/app/example/delivery/http/someapi"
-	r "app-module/internal/app/example/repository/some-source"
+	r "app-module/internal/app/example/repository/postgres"
 	uc "app-module/internal/app/example/usecase"
 	"app-module/pkg/logger"
-	"app-module/pkg/source"
+	"app-module/pkg/postgres"
 
 	"github.com/labstack/echo/v4"
 )
@@ -17,7 +17,7 @@ func Run(api *echo.Group) error {
 	l := logger.Formatted()
 
 	// Init repository layer
-	repository := r.New(l, source.New())
+	repository := r.New(l, postgres.New())
 
 	// Init delivery layer
 	someApiDelivery := sad.New("")

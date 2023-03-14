@@ -1,9 +1,15 @@
 {
     "server": {
-        "port": "2222",
-        "host": "localhost"
+        "port": "2222"
     },
     "someapi": {
         "url": ""
+    },
+    "postgres": {
+        "host": "db",
+        "port": 5432,
+        "user": "postgres",
+        "password": "123",
+        "database": "clean_arch"
     }
 }
