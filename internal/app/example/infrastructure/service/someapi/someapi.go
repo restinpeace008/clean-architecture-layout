@@ -11,7 +11,7 @@ type delivery struct {
 	url string
 }
 
-func New(url string) example.SomeApiDelivery {
+func New(url string) example.SomeService {
 	return &delivery{url: url}
 }
 
