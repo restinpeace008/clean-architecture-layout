@@ -19,7 +19,7 @@ func processError(err error) *string {
 	return nil
 }
 
-func processCode(err error) (code int) {
+func ejectCode(err error) (code int) {
 	code = http.StatusOK
 	if err != nil {
 		code = errors.CodeHTTP(err)
@@ -39,7 +39,7 @@ func ProcessResponse(ctx echo.Context, l *logrus.Logger, data any, err error) {
 		if err != nil {
 			data = nil
 		}
-		ctx.JSON(processCode(err), Response{Data: data, Error: processError(err)})
+		ctx.JSON(ejectCode(err), Response{Data: data, Error: processError(err)})
 	}
 
 }
