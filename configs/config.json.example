@@ -6,6 +6,10 @@
         "url": ""
     },
     "postgres": {
-        "dsn": "postgres://postgres:123@db:5432/clean_arch?sslmode=disable"
+        "host": "db",
+        "port": 5432,
+        "user": "postgres",
+        "password": "123",
+        "database": "clean_arch"
     }
 }

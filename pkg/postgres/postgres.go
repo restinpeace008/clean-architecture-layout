@@ -4,20 +4,21 @@ import (
 	"app-module/pkg/errors"
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 	"time"
 
-	"github.com/lib/pq"
 	"github.com/spf13/viper"
 )
 
 func New() *sql.DB {
-	connString, err := pq.ParseURL(viper.GetString("postgres.dsn"))
-	if err != nil {
-		log.Fatal(errors.Wrap(err, "invalid dsn"))
-	}
-
-	db, err := sql.Open("postgres", connString)
+	db, err := sql.Open("postgres",
+		fmt.Sprintf("host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable",
+			viper.GetString("postgres.host"),
+			viper.GetInt("postgres.port"),
+			viper.GetString("postgres.user"),
+			viper.GetString("postgres.password"),
+			viper.GetString("postgres.database")))
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "unable to connect"))
 	}
@@ -29,38 +30,5 @@ func New() *sql.DB {
 		log.Fatal(errors.Wrap(err, "ping db"))
 	}
 
-	if err := initTables(db); err != nil {
-		log.Fatal(errors.Wrap(err, "init tables"))
-	}
-
 	return db
-}
-
-func initTables(db *sql.DB) error {
-	tx, err := db.Begin()
-	if err != nil {
-		return errors.Wrap(err, "begin transaction")
-	}
-	defer func() {
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}()
-
-	createExampleTable := `CREATE TABLE IF NOT EXISTS example
-	(
-		id                 serial       NOT NULL,
-    	name               varchar(255)  NOT NULL,
-    	CONSTRAINT PK_example_id PRIMARY KEY (id)
-	);
-	`
-
-	_, err = tx.Exec(createExampleTable)
-	if err != nil {
-		return errors.Wrap(err, "exec")
-	}
-
-	return nil
 }
