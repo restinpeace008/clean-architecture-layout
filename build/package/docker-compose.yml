@@ -2,8 +2,8 @@ version: "3.9"
 services:
   app:
     build: 
-      context: ..
-      dockerfile: $PWD/build/Dockerfile
+      context: $PWD
+      dockerfile: $PWD/build/package/Dockerfile
     container_name: clean-arch-back
     ports:
       - "2222:2222"
