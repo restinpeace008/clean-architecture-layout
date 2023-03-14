@@ -31,7 +31,7 @@ type DependencyMock struct {
 // TestCase struct for testing functions with dependencies
 type TestCase struct {
 	Input  any                       // args for usecase func
-	Want   map[string]DependencyMock // mocks for repository and delivery interfaces
+	Want   map[string]DependencyMock // mocks for repository and service interfaces
 	Result any                       // expected result (if exists) for usecase func
 	Err    error                     // expected error for usecase func
 }

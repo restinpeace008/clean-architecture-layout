@@ -2,8 +2,8 @@ package example
 
 import (
 	d "app-module/internal/app/example/delivery/http/echo"
-	sad "app-module/internal/app/example/delivery/http/someapi"
-	r "app-module/internal/app/example/repository/postgres"
+	r "app-module/internal/app/example/infrastructure/repository/postgres"
+	sad "app-module/internal/app/example/infrastructure/service/someapi"
 	uc "app-module/internal/app/example/usecase"
 	"app-module/pkg/logger"
 	"app-module/pkg/postgres"
