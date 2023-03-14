@@ -8,6 +8,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const (
+	someErrorMessage string = "new err"
+)
+
 // internal.Error()
 func TestError(t *testing.T) {
 	tests := []struct {
@@ -201,7 +205,7 @@ func TestGetCodeHTTP(t *testing.T) {
 
 // internal.setCodeHTTP()
 func TestSetCodeHTTP(t *testing.T) {
-	e := New("new error").(interface{ setCodeHTTP(int) error })
+	e := New(someErrorMessage).(interface{ setCodeHTTP(int) error })
 	err := e.setCodeHTTP(http.StatusBadRequest)
 
 	tests := []struct {
@@ -235,7 +239,7 @@ func TestSetCodeHTTP(t *testing.T) {
 
 // external.New()
 func TestNew(t *testing.T) {
-	errMessage := "new error"
+	errMessage := someErrorMessage
 
 	tests := []struct {
 		input  string
@@ -273,8 +277,7 @@ func TestNew(t *testing.T) {
 
 // external.Wrap()
 func TestWrap(t *testing.T) {
-	testMsg := "new err"
-	testErr := New(testMsg)
+	testErr := New(someErrorMessage)
 
 	tests := []struct {
 		context string
@@ -336,8 +339,7 @@ func TestWrap(t *testing.T) {
 
 // external.Unwrap()
 func TestUnwrap(t *testing.T) {
-	testMsg := "new err"
-	testErr := New(testMsg)
+	testErr := New(someErrorMessage)
 
 	tests := []struct {
 		input  error
@@ -629,7 +631,7 @@ func TestCodeHTTP(t *testing.T) {
 
 // internal.AddCodeHTTP()
 func TestAddCodeHTTP(t *testing.T) {
-	err := New("new error")
+	err := New(someErrorMessage)
 
 	tests := []struct {
 		input  error
