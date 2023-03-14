@@ -144,6 +144,101 @@ func (mr *MockRepositoryMockRecorder) Update(data interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRepository)(nil).Update), data)
 }
 
+// MockDBRepository is a mock of DBRepository interface.
+type MockDBRepository struct {
+	ctrl     *gomock.Controller
+	recorder *MockDBRepositoryMockRecorder
+}
+
+// MockDBRepositoryMockRecorder is the mock recorder for MockDBRepository.
+type MockDBRepositoryMockRecorder struct {
+	mock *MockDBRepository
+}
+
+// NewMockDBRepository creates a new mock instance.
+func NewMockDBRepository(ctrl *gomock.Controller) *MockDBRepository {
+	mock := &MockDBRepository{ctrl: ctrl}
+	mock.recorder = &MockDBRepositoryMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockDBRepository) EXPECT() *MockDBRepositoryMockRecorder {
+	return m.recorder
+}
+
+// Create mocks base method.
+func (m *MockDBRepository) Create(data *example.Instance) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", data)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockDBRepositoryMockRecorder) Create(data interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockDBRepository)(nil).Create), data)
+}
+
+// Delete mocks base method.
+func (m *MockDBRepository) Delete(id int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockDBRepositoryMockRecorder) Delete(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockDBRepository)(nil).Delete), id)
+}
+
+// GetMany mocks base method.
+func (m *MockDBRepository) GetMany(ids []int) ([]*example.Instance, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMany", ids)
+	ret0, _ := ret[0].([]*example.Instance)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMany indicates an expected call of GetMany.
+func (mr *MockDBRepositoryMockRecorder) GetMany(ids interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMany", reflect.TypeOf((*MockDBRepository)(nil).GetMany), ids)
+}
+
+// GetOne mocks base method.
+func (m *MockDBRepository) GetOne(id int) (*example.Instance, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetOne", id)
+	ret0, _ := ret[0].(*example.Instance)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetOne indicates an expected call of GetOne.
+func (mr *MockDBRepositoryMockRecorder) GetOne(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOne", reflect.TypeOf((*MockDBRepository)(nil).GetOne), id)
+}
+
+// Update mocks base method.
+func (m *MockDBRepository) Update(data *example.Instance) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", data)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockDBRepositoryMockRecorder) Update(data interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockDBRepository)(nil).Update), data)
+}
+
 // MockDelivery is a mock of Delivery interface.
 type MockDelivery struct {
 	ctrl     *gomock.Controller
@@ -179,31 +274,31 @@ func (mr *MockDeliveryMockRecorder) Expose() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Expose", reflect.TypeOf((*MockDelivery)(nil).Expose))
 }
 
-// MockSomeApiDelivery is a mock of SomeApiDelivery interface.
-type MockSomeApiDelivery struct {
+// MockSomeService is a mock of SomeService interface.
+type MockSomeService struct {
 	ctrl     *gomock.Controller
-	recorder *MockSomeApiDeliveryMockRecorder
+	recorder *MockSomeServiceMockRecorder
 }
 
-// MockSomeApiDeliveryMockRecorder is the mock recorder for MockSomeApiDelivery.
-type MockSomeApiDeliveryMockRecorder struct {
-	mock *MockSomeApiDelivery
+// MockSomeServiceMockRecorder is the mock recorder for MockSomeService.
+type MockSomeServiceMockRecorder struct {
+	mock *MockSomeService
 }
 
-// NewMockSomeApiDelivery creates a new mock instance.
-func NewMockSomeApiDelivery(ctrl *gomock.Controller) *MockSomeApiDelivery {
-	mock := &MockSomeApiDelivery{ctrl: ctrl}
-	mock.recorder = &MockSomeApiDeliveryMockRecorder{mock}
+// NewMockSomeService creates a new mock instance.
+func NewMockSomeService(ctrl *gomock.Controller) *MockSomeService {
+	mock := &MockSomeService{ctrl: ctrl}
+	mock.recorder = &MockSomeServiceMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockSomeApiDelivery) EXPECT() *MockSomeApiDeliveryMockRecorder {
+func (m *MockSomeService) EXPECT() *MockSomeServiceMockRecorder {
 	return m.recorder
 }
 
 // CheckSomeData mocks base method.
-func (m *MockSomeApiDelivery) CheckSomeData(param string) error {
+func (m *MockSomeService) CheckSomeData(param string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CheckSomeData", param)
 	ret0, _ := ret[0].(error)
@@ -211,7 +306,7 @@ func (m *MockSomeApiDelivery) CheckSomeData(param string) error {
 }
 
 // CheckSomeData indicates an expected call of CheckSomeData.
-func (mr *MockSomeApiDeliveryMockRecorder) CheckSomeData(param interface{}) *gomock.Call {
+func (mr *MockSomeServiceMockRecorder) CheckSomeData(param interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckSomeData", reflect.TypeOf((*MockSomeApiDelivery)(nil).CheckSomeData), param)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckSomeData", reflect.TypeOf((*MockSomeService)(nil).CheckSomeData), param)
 }

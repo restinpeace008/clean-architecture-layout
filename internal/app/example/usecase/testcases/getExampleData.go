@@ -20,7 +20,7 @@ var (
 						nil,
 					},
 				},
-				"sad.CheckSomeData": {
+				"s.CheckSomeData": {
 					Args:   "1",
 					Result: []any{nil},
 				},
@@ -58,7 +58,7 @@ var (
 						nil,
 					},
 				},
-				"sad.CheckSomeData": {
+				"s.CheckSomeData": {
 					Args: "3",
 					Result: []any{
 						fmt.Errorf("some error"),

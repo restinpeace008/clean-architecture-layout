@@ -7,16 +7,16 @@ import (
 	"net/http"
 )
 
-type delivery struct {
+type service struct {
 	url string
 }
 
 func New(url string) example.SomeService {
-	return &delivery{url: url}
+	return &service{url: url}
 }
 
-func (d *delivery) CheckSomeData(param string) error {
-	res, err := http.DefaultClient.Get(d.url + "/" + param)
+func (s *service) CheckSomeData(param string) error {
+	res, err := http.DefaultClient.Get(s.url + "/" + param)
 	if err != nil {
 		return errors.Wrap(err, "do request")
 	}
