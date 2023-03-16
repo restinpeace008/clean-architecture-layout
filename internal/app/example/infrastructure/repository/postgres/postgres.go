@@ -56,7 +56,7 @@ func (r *repository) GetMany(ids []int) ([]*example.Instance, error) {
 
 	defer rows.Close()
 
-	result := make([]*example.Instance, 0)
+	result := make([]*example.Instance, 0, len(ids))
 
 	for rows.Next() {
 		var (
