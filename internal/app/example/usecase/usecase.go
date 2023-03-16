@@ -28,7 +28,7 @@ func (uc *usecase) GetExampleData(id int) (*example.Instance, error) {
 	// Go to `Repository` layer
 	data, err := uc.r.GetOne(id)
 	if err != nil {
-		return nil, errors.Wrap(err, "GetExampleData", http.StatusInternalServerError)
+		return nil, errors.Wrap(err, "GetOne", http.StatusInternalServerError)
 	}
 
 	if param, ok := data.Test.(string); ok {

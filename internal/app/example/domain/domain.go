@@ -50,15 +50,6 @@ type Repository interface {
 	Delete(id int) error
 }
 
-// DBRepository behaviour
-type DBRepository interface {
-	Create(data *Instance) error
-	GetOne(id int) (*Instance, error)
-	GetMany(ids []int) ([]*Instance, error)
-	Update(data *Instance) error
-	Delete(id int) error
-}
-
 // Delivery behaviour
 type Delivery interface {
 	Expose()
