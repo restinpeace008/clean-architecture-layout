@@ -18,7 +18,7 @@ type repository struct {
 
 // New `repository` factory
 // And inject them here
-func New(logger *logrus.Logger, db *sql.DB) example.DBRepository {
+func New(logger *logrus.Logger, db *sql.DB) example.Repository {
 	return &repository{
 		logger: logger,
 		db:     db,
