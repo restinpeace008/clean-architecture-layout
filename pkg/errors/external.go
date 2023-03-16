@@ -115,7 +115,7 @@ func CauseLocation(err error) string {
 				return CauseLocation(wrapped)
 			}
 		}
-		return e.getLocation()
+		return strings.TrimPrefix(e.getLocation(), viper.GetString("local_dev_dir"))
 	}
 
 	return ""
