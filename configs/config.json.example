@@ -1,5 +1,5 @@
 {
-    "debug": true,
+    "local_dev_dir": "/source",
     "server": {
         "port": "2222"
     },

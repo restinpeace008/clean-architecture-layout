@@ -3,12 +3,10 @@ package logger
 import (
 	"app-module/pkg/errors"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 var Default *logrus.Logger
@@ -67,12 +65,7 @@ func Middleware(log *logrus.Logger) echo.MiddlewareFunc {
 
 			if err != nil {
 				fields["when"] = errors.When(err)
-
-				location := errors.Location(err)
-				if viper.GetBool("debug") {
-					location = strings.TrimPrefix(location, "/source")
-				}
-				fields["location"] = location
+				fields["location"] = errors.Location(err)
 				fields["error"] = err.Error()
 			}
 
