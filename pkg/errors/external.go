@@ -3,6 +3,9 @@ package errors
 import (
 	"fmt"
 	"runtime"
+	"strings"
+
+	"github.com/spf13/viper"
 )
 
 func New(text string, codeHTTP ...int) error {
@@ -53,7 +56,7 @@ func Unwrap(err error) error {
 
 func Location(err error) string {
 	if e, ok := err.(interface{ getLocation() string }); ok {
-		return e.getLocation()
+		return strings.TrimPrefix(e.getLocation(), viper.GetString("local_dev_dir"))
 	}
 	return ""
 }
@@ -112,7 +115,7 @@ func CauseLocation(err error) string {
 				return CauseLocation(wrapped)
 			}
 		}
-		return e.getLocation()
+		return strings.TrimPrefix(e.getLocation(), viper.GetString("local_dev_dir"))
 	}
 
 	return ""
