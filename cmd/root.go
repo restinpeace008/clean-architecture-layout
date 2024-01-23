@@ -22,7 +22,8 @@ var (
 		// Uncomment the following line if your bare application
 		// has an action associated with it:
 		Run: func(cmd *cobra.Command, args []string) {
-			app.Start()
+			fmt.Println("Start server: ", app.Start())
+			os.Exit(1)
 		},
 	}
 	cfgFile string
